@@ -24,5 +24,5 @@ steps:
 
 - script: |
     git checkout development
-    git checkout -b 
+    git checkout -b sync-to-development
   displayName: Git checkout develop sync branch
