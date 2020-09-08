@@ -1,8 +1,8 @@
 const axios = require('axios').default;
+const shortUUID = require('short-uuid');
 
 const args = process.argv.slice(2);
 const ACCESS_TOKEN = args[0];
-const SYNC_NUMBER = args[1];
 const REPO_OWNER = 'timgraf';
 const REPO = 'pipelines-javascript';
 
@@ -17,15 +17,13 @@ const client = axios.create({
 
 const main = async () => {
     try {
-        const devBranchResponse = await getBranchSha('development');
-        const developSha = devBranchResponse.data.commit.sha;
+        const syncBranchName = `sync-${shortUUID.generate()}`;
+        const getBranchResponse = await getBranchSha('development');
+        const developSha = getBranchResponse.data.commit.sha;
 
-        const syncBranchResponse = await createSyncBranch(developSha);
-        const syncSha = syncBranchResponse.data.object.sha;
-
-        const pullRequestResponse = await createPullRequest('master', `sync-${SYNC_NUMBER}`);
-
-
+        const createBranchResponse = await createSyncBranch(developSha, syncBranchName);
+        const mergeResponse = await mergeBranches('master', syncBranchName);
+        const pullRequestResponse = await createPullRequest(syncBranchName, 'development');
     } catch (error) {
         console.log(error);
     }
@@ -36,13 +34,23 @@ const getBranchSha = async (branch) => {
     return client.get(GET_BRANCHES_URL);
 }
 
-const createSyncBranch = async (developSha) => {
+const createSyncBranch = async (developSha, syncBranchName) => {
     const CREATE_BRANCH_URL = `repos/${REPO_OWNER}/${REPO}/git/refs`;
     const postData = {
-        ref: `refs/heads/sync-${SYNC_NUMBER}`,
+        ref: `refs/heads/${syncBranchName}`,
         sha: developSha
     };
     return client.post(CREATE_BRANCH_URL, postData);
+};
+
+const mergeBranches = async (fromBranch, toBranch) => {
+    const MERGE_BRANCH_URL = `/repos/${REPO_OWNER}/${REPO}/merges`;
+    const postData = {
+        head: fromBranch,
+        base: toBranch,
+        commit_message: `Merge ${fromBranch} into ${toBranch}`
+      };
+    return client.post(MERGE_BRANCH_URL, postData);
 };
 
 const createPullRequest = (fromBranch, toBranch) => {

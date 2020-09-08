@@ -25,5 +25,5 @@ steps:
 - script: |
     cd scripts
     npm install
-    node create-sync-branch.js $(PAT) 1000
+    node create-sync-branch.js $(PAT)
   displayName: Git checkout develop sync branch
