@@ -21,5 +21,5 @@ steps:
   displayName: 'npm install and build'
 
 - script: |
-    ls -al
+    git checkout development
   displayName: Git checkout develop sync branch
