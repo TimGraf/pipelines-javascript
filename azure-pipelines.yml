@@ -23,6 +23,8 @@ steps:
   displayName: 'npm install and build'
 
 - script: |
+    git config --global user.email "polyglotdev@protonmail.com"
+    git config --global user.name "TimGraf"
     git checkout development
     git checkout -b sync-to-development
     git push origin sync-to-development
