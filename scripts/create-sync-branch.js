@@ -8,11 +8,14 @@ const REPO = 'pipelines-javascript';
 const client = new GitHubClient(ACCESS_TOKEN, REPO_OWNER, REPO);
 
 const handleMergeError = (error, branchName) => {
-    const message = `Merge from master into ${branchName} branch failed.
-        In order to correct this manual intervention is required.
-        Manually pull the ${branchName} branch and perform a merge from
-        master and correct any possible merge conflicts. See the stack
-        trace above.`;
+    const message = `
+    Merge from master into ${branchName} branch failed.
+
+    In order to correct this manual intervention is required.
+
+    Manually pull the ${branchName} branch and perform a merge from
+    master and correct any possible merge conflicts.
+    `;
 
     console.log(error);
     console.log(message);
