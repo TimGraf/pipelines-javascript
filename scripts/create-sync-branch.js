@@ -18,7 +18,7 @@ const handleMergeError = (error, branchName) => {
 };
 
 const main = async () => {
-    const dateString = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
+    const dateString = new Date().toISOString().replace(/\./g, '-').replace(/\:/g, '-');
     const syncBranchName = `sync-master-to-develop-${dateString}`;
 
     try {
@@ -28,11 +28,15 @@ const main = async () => {
         const createBranchResponse = await client.createSyncBranch(developSha, syncBranchName);
         const mergeResponse = await client.mergeBranches('master', syncBranchName);
         const pullRequestResponse = await client.createPullRequest(syncBranchName, 'development');
+
+        process.exit(0);
     } catch (error) {
         if (error instanceof MergeError) {
             handleMergeError(error, syncBranchName);
+            process.exit(1);
         } else {
             console.log(error);
+            process.exit(1);
         }
     }
 };
