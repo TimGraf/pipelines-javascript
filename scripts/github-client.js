@@ -26,7 +26,7 @@ class GitHubClient {
         this.repo = repo;
     }
 
-    getBranchSha(branch) {
+    getBranchInfo(branch) {
         const GET_BRANCHES_URL = `repos/${this.repoOwner}/${this.repo}/branches/${branch}`;
         return this.client.get(GET_BRANCHES_URL);
     }

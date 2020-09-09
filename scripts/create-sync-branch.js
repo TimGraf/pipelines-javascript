@@ -1,5 +1,4 @@
 const { GitHubClient, MergeError } = require('./github-client');
-const shortUUID = require('short-uuid');
 
 const args = process.argv.slice(2);
 const ACCESS_TOKEN = args[0];
@@ -8,25 +7,30 @@ const REPO = 'pipelines-javascript';
 
 const client = new GitHubClient(ACCESS_TOKEN, REPO_OWNER, REPO);
 
-const handleMergeError = (error) => {
-    const message = '';
+const handleMergeError = (error, branchName) => {
+    const message = `Merge from master into ${branchName} branch failed.
+        In order to correct this manual intervention is required.
+        Manually pull the ${branchName} branch and perform a merge from
+        master and correct any possible merge conflicts.`;
 
     console.log(message);
     console.log(error);
 };
 
 const main = async () => {
+    const dateString = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
+    const syncBranchName = `sync-master-to-develop-${dateString}`;
+
     try {
-        const syncBranchName = `sync-${shortUUID.generate()}`;
-        const getBranchResponse = await client.getBranchSha('development');
-        const developSha = getBranchResponse.data.commit.sha;
+        const getDevelopBranchResponse = await client.getBranchInfo('development');
+        const developSha = getDevelopBranchResponse.data.commit.sha;
 
         const createBranchResponse = await client.createSyncBranch(developSha, syncBranchName);
         const mergeResponse = await client.mergeBranches('master', syncBranchName);
         const pullRequestResponse = await client.createPullRequest(syncBranchName, 'development');
     } catch (error) {
         if (error instanceof MergeError) {
-            handleMergeError(error);
+            handleMergeError(error, syncBranchName);
         } else {
             console.log(error);
         }
