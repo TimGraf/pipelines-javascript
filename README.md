@@ -1,5 +1,7 @@
 ![Build Status](https://dev.azure.com/tgraf/tgraf/_apis/build/status/TimGraf.pipelines-javascript?branchName=master)
 
+Adding a line to test a merge.
+
 
 
 # Sample NodeJS application for Azure Pipelines docs
