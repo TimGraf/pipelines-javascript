@@ -46,8 +46,13 @@ class GitHubClient {
             head: fromBranch,
             base: toBranch,
             commit_message: `Merge ${fromBranch} into ${toBranch}`
-          };
-        return this.client.post(MERGE_BRANCH_URL, postData);
+        };
+        
+        try {
+            return this.client.post(MERGE_BRANCH_URL, postData);
+        } catch (error) {
+            throw new MergeError(error.message);
+        }
     }
 
     createPullRequest(fromBranch, toBranch) {
@@ -57,7 +62,7 @@ class GitHubClient {
             body: `Merge ${fromBranch} into ${toBranch}`,
             head: fromBranch,
             base: toBranch
-          };
+        };
         return this.client.post(CREATE_PULL_REQUEST_URL, postData);
     }
 }

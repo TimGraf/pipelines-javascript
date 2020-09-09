@@ -11,10 +11,11 @@ const handleMergeError = (error, branchName) => {
     const message = `Merge from master into ${branchName} branch failed.
         In order to correct this manual intervention is required.
         Manually pull the ${branchName} branch and perform a merge from
-        master and correct any possible merge conflicts.`;
+        master and correct any possible merge conflicts. See the stack
+        trace above.`;
 
-    console.log(message);
     console.log(error);
+    console.log(message);
 };
 
 const main = async () => {
