@@ -6,6 +6,8 @@ class MergeError extends Error {
   
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, MergeError);
+        } else {
+            this.stack = (new Error()).stack;
         }
     
         this.name = 'MergeError';
@@ -40,7 +42,10 @@ class GitHubClient {
         return this.client.post(CREATE_BRANCH_URL, postData);
     }
 
-    mergeBranches(fromBranch, toBranch) {
+    async mergeBranches(fromBranch, toBranch) {
+        // This method needs to be async so an error with the merge can be caught and wrapped in a 
+        // custom MergeError. That way we can handle it differently.
+
         const MERGE_BRANCH_URL = `/repos/${this.repoOwner}/${this.repo}/merges`;
         const postData = {
             head: fromBranch,
@@ -49,7 +54,7 @@ class GitHubClient {
         };
         
         try {
-            return this.client.post(MERGE_BRANCH_URL, postData);
+            return mergeResponse = await this.client.post(MERGE_BRANCH_URL, postData);
         } catch (error) {
             throw new MergeError(error.message);
         }
