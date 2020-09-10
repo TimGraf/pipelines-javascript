@@ -1,7 +1,5 @@
 ![Build Status](https://dev.azure.com/tgraf/tgraf/_apis/build/status/TimGraf.pipelines-javascript?branchName=master)
 
-Adding a line from release/1-0-3 to test merge conflicts.
-
 # Sample NodeJS application for Azure Pipelines docs
 
 For information on how to set up a pipeline for this repository, see [Create your first pipeline](https://docs.microsoft.com/azure/devops/pipelines/get-started-yaml?view=azure-devops).
