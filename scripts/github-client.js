@@ -54,7 +54,7 @@ class GitHubClient {
         };
         
         try {
-            return mergeResponse = await this.client.post(MERGE_BRANCH_URL, postData);
+            return await this.client.post(MERGE_BRANCH_URL, postData);
         } catch (error) {
             throw new MergeError(error.message);
         }
