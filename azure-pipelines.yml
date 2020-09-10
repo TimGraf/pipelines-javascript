@@ -4,26 +4,49 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
-
-pr: none
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - "*"
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - master
+      - develop
+  paths:
+    include:
+      - "*"
 
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+stages:
+  - stage: BUILD
+    displayName: 'Build'
+    jobs:
+      - job: Build
+        steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '10.x'
+          displayName: 'Install Node.js'
+        - script: |
+            npm install
+            npm run build
+          displayName: 'npm install and build'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
-
-- script: |
-    cd scripts
-    npm install
-    node create-sync-branch.js $(PAT)
-  displayName: Git checkout develop sync branch
+  - stage: BUILD
+    displayName: 'Build'
+    jobs:
+      - job: SyncBranch
+        steps:
+        - script: |
+            cd scripts
+            npm install
+            node create-sync-branch.js $(PAT)
+          displayName: Git checkout develop sync branch
+        condition: contains(variables['build.sourceBranch'], 'refs/heads/master')

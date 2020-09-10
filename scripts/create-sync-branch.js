@@ -21,7 +21,7 @@ const handleMergeError = (error, branchName) => {
     console.log(message);
 };
 
-const main = async () => {
+(async () => {
     const dateString = new Date().toISOString().replace(/\./g, '-').replace(/\:/g, '-');
     const syncBranchName = `sync-master-to-develop-${dateString}`;
 
@@ -43,6 +43,4 @@ const main = async () => {
             process.exit(1);
         }
     }
-};
-
-main();
+})();
