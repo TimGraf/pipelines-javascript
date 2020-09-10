@@ -39,8 +39,8 @@ stages:
             npm run build
           displayName: 'npm install and build'
 
-  - stage: BUILD
-    displayName: 'Build'
+  - stage: SYNC_BRANCH
+    displayName: 'Sync Branch'
     jobs:
       - job: SyncBranch
         steps:
