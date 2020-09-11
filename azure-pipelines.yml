@@ -44,10 +44,14 @@ stages:
     jobs:
       - job: SyncBranch
         steps:
+        - task: YarnInstaller@3
+          inputs:
+            versionSpec: '1.x'
         - script: |
             cd scripts
-            npm install
+            yarn install
             export PAT=$(PAT)
+            export SYNC_BRANCH_NAME=sync-branch
             node src/create-sync-branch.js
           displayName: Git checkout develop sync branch
         condition: contains(variables['build.sourceBranch'], 'refs/heads/master')
