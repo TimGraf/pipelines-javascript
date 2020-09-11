@@ -1,7 +1,6 @@
 const { GitHubClient, MergeError } = require('./github-client');
 
-const args = process.argv.slice(2);
-const ACCESS_TOKEN = args[0];
+const ACCESS_TOKEN = process.env.PAT;
 const REPO_OWNER = 'timgraf';
 const REPO = 'pipelines-javascript';
 
