@@ -1,6 +1,7 @@
 const { GitHubClient, MergeError } = require('./github-client');
 
 const ACCESS_TOKEN = process.env.PAT;
+const SYNC_BRANCH_NAME = process.env.SYNC_BRANCH_NAME;
 const REPO_OWNER = 'timgraf';
 const REPO = 'pipelines-javascript';
 
@@ -21,21 +22,18 @@ const handleMergeError = (error, branchName) => {
 };
 
 (async () => {
-    const dateString = new Date().toISOString().replace(/\./g, '-').replace(/\:/g, '-');
-    const syncBranchName = `sync-master-to-develop-${dateString}`;
-
     try {
         const getDevelopBranchResponse = await client.getBranchInfo('development');
         const developSha = getDevelopBranchResponse.data.commit.sha;
 
-        const createBranchResponse = await client.createSyncBranch(developSha, syncBranchName);
-        const mergeResponse = await client.mergeBranches('master', syncBranchName);
-        const pullRequestResponse = await client.createPullRequest(syncBranchName, 'development');
+        const createBranchResponse = await client.createSyncBranch(developSha, SYNC_BRANCH_NAME);
+        const mergeResponse = await client.mergeBranches('master', SYNC_BRANCH_NAME);
+        const pullRequestResponse = await client.createPullRequest(SYNC_BRANCH_NAME, 'development');
 
         process.exit(0);
     } catch (error) {
         if (error instanceof MergeError) {
-            handleMergeError(error, syncBranchName);
+            handleMergeError(error, SYNC_BRANCH_NAME);
             process.exit(1);
         } else {
             console.log(error);
