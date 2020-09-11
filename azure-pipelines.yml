@@ -47,6 +47,7 @@ stages:
         - script: |
             cd scripts
             npm install
-            node src/create-sync-branch.js $(PAT)
+            export PAT=$(PAT)
+            node src/create-sync-branch.js
           displayName: Git checkout develop sync branch
         condition: contains(variables['build.sourceBranch'], 'refs/heads/master')
