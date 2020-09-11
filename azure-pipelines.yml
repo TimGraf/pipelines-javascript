@@ -44,9 +44,6 @@ stages:
     jobs:
       - job: SyncBranch
         steps:
-        - task: YarnInstaller@3
-          inputs:
-            versionSpec: '1.x'
         - script: |
             cd scripts
             yarn install
